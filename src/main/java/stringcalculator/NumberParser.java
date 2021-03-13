@@ -11,7 +11,18 @@ public class NumberParser {
         delimiter = "[,\n]";
     }
 
-    
+    private String[] splitOnDelimiter(String numbers) {
+        if (hasCustomDelimiter(numbers)) {
+            return numbers
+                    .substring(numbers.indexOf("\n") + 1)
+                    .split(extractDelimiter(numbers));
+        }
+        return numbers.split(delimiter);
+    }
+
+    private boolean hasCustomDelimiter(String numbers) {
+        return numbers.startsWith("/");
+    }
 
     List<Integer> fromStringToNumber(String numbers) {
         return Arrays
@@ -20,5 +31,15 @@ public class NumberParser {
                 .collect(Collectors.toList());
     }
 
+    private String extractDelimiter(String input) {
+        String escapedInput;
+        int START_OF_SUBSTRING = input.indexOf("\n");
 
+        escapedInput = input
+                .substring(0, START_OF_SUBSTRING)
+                .replace("//", "")
+                .replace("[", "")
+                .replace("]", "");
+        return "\\Q" + escapedInput + "\\E";
+    }
 }
